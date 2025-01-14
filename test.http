@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:3000
+
+### ヘルスチェックエンドポイント
+GET {{baseUrl}}/health
+
+### CPU負荷テスト
+GET {{baseUrl}}/cpu-test
+
+### メモリ負荷テスト
+GET {{baseUrl}}/memory-test
+
+### エラーシミュレーション
+GET {{baseUrl}}/error-test
