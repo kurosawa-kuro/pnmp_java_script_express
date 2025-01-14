@@ -24,6 +24,43 @@ print_section() {
     echo -e "\n${BLUE}=== $1 ===${NC}\n"
 }
 
+# Node.jsとnpmの削除セクション
+print_section "Removing existing Node.js and npm"
+
+if command -v npm &> /dev/null || command -v node &> /dev/null; then
+    log_info "Removing existing Node.js and npm installations..."
+    if command -v sudo &> /dev/null; then
+        sudo dnf remove -y nodejs npm
+        sudo rm -rf /usr/lib/node_modules
+        sudo rm -rf /usr/local/lib/node_modules
+    else
+        dnf remove -y nodejs npm
+        rm -rf /usr/lib/node_modules
+        rm -rf /usr/local/lib/node_modules
+    fi
+    
+    # ユーザー固有のNode.js関連ファイルの削除
+    rm -rf ~/.npm
+    rm -rf ~/.node-gyp
+    rm -rf ~/.node_repl_history
+    
+    log_success "Existing Node.js and npm removed successfully"
+else
+    log_info "No existing Node.js or npm installation found"
+fi
+
+# Node.jsの新規インストール
+print_section "Installing Node.js"
+
+log_info "Adding Node.js repository..."
+if command -v sudo &> /dev/null; then
+    curl -fsSL https://rpm.nodesource.com/setup_20.x | sudo bash -
+    sudo dnf install -y nodejs
+else
+    curl -fsSL https://rpm.nodesource.com/setup_20.x | bash -
+    dnf install -y nodejs
+fi
+
 # PNPMのセットアップ
 print_section "Setting up PNPM"
 
@@ -126,6 +163,9 @@ log_success "CloudWatch Agent configuration completed"
 
 # 最終確認
 print_section "Verification"
+log_info "Node.js Version:"
+node -v || (log_error "Failed to get Node.js version" && exit 1)
+
 log_info "PNPM Version:"
 pnpm -v || (log_error "Failed to get PNPM version" && exit 1)
 
