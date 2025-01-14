@@ -67,3 +67,7 @@ npx tsc --init
 ```bash
 pnpm add helmet cors
 ```
+
+
+   - CloudWatchAgentServerPolicy
+   - CloudWatchAgentAdminPolicy
